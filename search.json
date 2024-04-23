@@ -1,0 +1,86 @@
+[
+  {
+    "objectID": "model.html",
+    "href": "model.html",
+    "title": "Model",
+    "section": "",
+    "text": "Code\nlibrary(reticulate)\n#use_virtualenv(\"C:\\\\Users\\\\C25Margaret.Meehan\\\\OneDrive - afacademy.af.edu\\\\Documents\\\\Math377FinalProject\\\\myenv\", required = TRUE)\nCode\nfrom palmerpenguins import penguins\nfrom pandas import get_dummies\nimport numpy as np\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn import preprocessing"
+  },
+  {
+    "objectID": "model.html#get-data",
+    "href": "model.html#get-data",
+    "title": "Model",
+    "section": "Get Data",
+    "text": "Get Data\n\n\nCode\ndf = penguins.load_penguins().dropna()\n\ndf.head(3)\n\n\n  species     island  bill_length_mm  ...  body_mass_g     sex  year\n0  Adelie  Torgersen            39.1  ...       3750.0    male  2007\n1  Adelie  Torgersen            39.5  ...       3800.0  female  2007\n2  Adelie  Torgersen            40.3  ...       3250.0  female  2007\n\n[3 rows x 8 columns]"
+  },
+  {
+    "objectID": "model.html#define-model-and-fit",
+    "href": "model.html#define-model-and-fit",
+    "title": "Model",
+    "section": "Define Model and Fit",
+    "text": "Define Model and Fit\n\n\nCode\nX = get_dummies(df[['bill_length_mm', 'species', 'sex']], drop_first = True)\ny = df['body_mass_g']\n\nmodel = LinearRegression().fit(X, y)"
+  },
+  {
+    "objectID": "model.html#get-some-information",
+    "href": "model.html#get-some-information",
+    "title": "Model",
+    "section": "Get some information",
+    "text": "Get some information\n\n\nCode\nprint(f\"R^2 {model.score(X,y)}\")\n\n\nR^2 0.8555368759537614\n\n\nCode\nprint(f\"Intercept {model.intercept_}\")\n\n\nIntercept 2169.269720939392\n\n\nCode\nprint(f\"Columns {X.columns}\")\n\n\nColumns Index(['bill_length_mm', 'species_Chinstrap', 'species_Gentoo', 'sex_male'], dtype='object')\n\n\nCode\nprint(f\"Coefficients {model.coef_}\")\n\n\nCoefficients [  32.53688677 -298.76553447 1094.86739145  547.36692408]\n\n\n\n\nCode\nfrom vetiver import VetiverModel\nv = VetiverModel(model, model_name='penguin_model', prototype_data=X)\n\n\n\n\nCode\nfrom vetiver import VetiverAPI, VetiverModel, vetiver_pin_write\nfrom pins import board_folder\n\nmodel_board = board_folder(\"data/model\", allow_pickle_read = True ) \nvetiver_pin_write(model_board, v)\n\n\nModel Cards provide a framework for transparent, responsible reporting. \n Use the vetiver `.qmd` Quarto template as a place to start, \n with vetiver.model_card()\nWriting pin:\nName: 'penguin_model'\nVersion: 20240423T150632Z-9ea85\n\n\n\n\nCode\napp = VetiverAPI(v, check_prototype = True)\n\n\n\n\nCode\nb = board_folder('data/model', allow_pickle_read=True)\nv = VetiverModel.from_pin(b, 'penguin_model')"
+  },
+  {
+    "objectID": "myenv/Lib/site-packages/numpy/random/LICENSE.html",
+    "href": "myenv/Lib/site-packages/numpy/random/LICENSE.html",
+    "title": "NCSA Open Source License",
+    "section": "",
+    "text": "This software is dual-licensed under the The University of Illinois/NCSA Open Source License (NCSA) and The 3-Clause BSD License\n\nNCSA Open Source License\nCopyright (c) 2019 Kevin Sheppard. All rights reserved.\nDeveloped by: Kevin Sheppard (kevin.sheppard@economics.ox.ac.uk, kevin.k.sheppard@gmail.com) http://www.kevinsheppard.com\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal with the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nRedistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimers.\nRedistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimers in the documentation and/or other materials provided with the distribution.\nNeither the names of Kevin Sheppard, nor the names of any contributors may be used to endorse or promote products derived from this Software without specific prior written permission.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.\n\n\n3-Clause BSD License\nCopyright (c) 2019 Kevin Sheppard. All rights reserved.\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n\nRedistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\nRedistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\nNeither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n\nComponents\nMany parts of this module have been derived from original sources, often the algorithm’s designer. Component licenses are located with the component code."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "eda.html",
+    "href": "eda.html",
+    "title": "Penguins EDA",
+    "section": "",
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(dplyr)\n\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\n\nCode\nlibrary(ggplot2)\n\ndf &lt;- palmerpenguins::penguins\n\n\n\n\nCode\ndf %&gt;%\n  group_by(species, sex) %&gt;%\n  summarise(\n    across(\n      where(is.numeric), \n      \\(x) mean(x, na.rm = TRUE)\n      )\n    ) %&gt;%\n  knitr::kable()\n\n\n`summarise()` has grouped output by 'species'. You can override using the\n`.groups` argument.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nspecies\nsex\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nyear\n\n\n\n\nAdelie\nfemale\n37.25753\n17.62192\n187.7945\n3368.836\n2008.055\n\n\nAdelie\nmale\n40.39041\n19.07260\n192.4110\n4043.493\n2008.055\n\n\nAdelie\nNA\n37.84000\n18.32000\n185.6000\n3540.000\n2007.000\n\n\nChinstrap\nfemale\n46.57353\n17.58824\n191.7353\n3527.206\n2007.971\n\n\nChinstrap\nmale\n51.09412\n19.25294\n199.9118\n3938.971\n2007.971\n\n\nGentoo\nfemale\n45.56379\n14.23793\n212.7069\n4679.741\n2008.069\n\n\nGentoo\nmale\n49.47377\n15.71803\n221.5410\n5484.836\n2008.066\n\n\nGentoo\nNA\n45.62500\n14.55000\n215.7500\n4587.500\n2008.400"
+  },
+  {
+    "objectID": "eda.html#penguin-size-and-mass-by-sex-and-species",
+    "href": "eda.html#penguin-size-and-mass-by-sex-and-species",
+    "title": "Penguins EDA",
+    "section": "",
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(dplyr)\n\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\n\nCode\nlibrary(ggplot2)\n\ndf &lt;- palmerpenguins::penguins\n\n\n\n\nCode\ndf %&gt;%\n  group_by(species, sex) %&gt;%\n  summarise(\n    across(\n      where(is.numeric), \n      \\(x) mean(x, na.rm = TRUE)\n      )\n    ) %&gt;%\n  knitr::kable()\n\n\n`summarise()` has grouped output by 'species'. You can override using the\n`.groups` argument.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nspecies\nsex\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nyear\n\n\n\n\nAdelie\nfemale\n37.25753\n17.62192\n187.7945\n3368.836\n2008.055\n\n\nAdelie\nmale\n40.39041\n19.07260\n192.4110\n4043.493\n2008.055\n\n\nAdelie\nNA\n37.84000\n18.32000\n185.6000\n3540.000\n2007.000\n\n\nChinstrap\nfemale\n46.57353\n17.58824\n191.7353\n3527.206\n2007.971\n\n\nChinstrap\nmale\n51.09412\n19.25294\n199.9118\n3938.971\n2007.971\n\n\nGentoo\nfemale\n45.56379\n14.23793\n212.7069\n4679.741\n2008.069\n\n\nGentoo\nmale\n49.47377\n15.71803\n221.5410\n5484.836\n2008.066\n\n\nGentoo\nNA\n45.62500\n14.55000\n215.7500\n4587.500\n2008.400"
+  },
+  {
+    "objectID": "eda.html#penguin-size-vs-mass-by-species",
+    "href": "eda.html#penguin-size-vs-mass-by-species",
+    "title": "Penguins EDA",
+    "section": "Penguin Size vs Mass by Species",
+    "text": "Penguin Size vs Mass by Species\n\n\nCode\ndf %&gt;%\n  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +\n  geom_point() + \n  geom_smooth(method = \"lm\")\n\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\n\n\nCode\n#install.packages(\"DBI\")\n#install.packages(\"duckdb\")\n\n\n\n\nCode\n#import duckdb\nfrom palmerpenguins import penguins\n\n#con = duckdb.connect('my-db.duckdb')\n#df = penguins.load_penguins()\n#con.execute('CREATE TABLE penguins AS SELECT * FROM df')\n#con.close()\n\n\n\n\nCode\n#library(DBI)\n#con &lt;- DBI::dbConnect(\n#  duckdb::duckdb(), \n#  dbdir = \"my-db.duckdb\"\n#  )\n#df &lt;- dplyr::tbl(con, \"penguins\")"
+  },
+  {
+    "objectID": "myenv/Lib/site-packages/matplotlib/backends/web_backend/nbagg_uat.html",
+    "href": "myenv/Lib/site-packages/matplotlib/backends/web_backend/nbagg_uat.html",
+    "title": "UAT for NbAgg backend.",
+    "section": "",
+    "text": "from imp import reload\nThe first line simply reloads matplotlib, uses the nbagg backend and then reloads the backend, just to ensure we have the latest modification to the backend code. Note: The underlying JavaScript will not be updated by this process, so a refresh of the browser after clearing the output and saving is necessary to clear everything fully.\nimport matplotlib\nreload(matplotlib)\n\nmatplotlib.use('nbagg')\n\nimport matplotlib.backends.backend_nbagg\nreload(matplotlib.backends.backend_nbagg)"
+  },
+  {
+    "objectID": "myenv/Lib/site-packages/matplotlib/backends/web_backend/nbagg_uat.html#uat-13---animation",
+    "href": "myenv/Lib/site-packages/matplotlib/backends/web_backend/nbagg_uat.html#uat-13---animation",
+    "title": "UAT for NbAgg backend.",
+    "section": "UAT 13 - Animation",
+    "text": "UAT 13 - Animation\nThe following should generate an animated line:\n\nimport matplotlib.animation as animation\nimport numpy as np\n\nfig, ax = plt.subplots()\n\nx = np.arange(0, 2*np.pi, 0.01)        # x-array\nline, = ax.plot(x, np.sin(x))\n\ndef animate(i):\n    line.set_ydata(np.sin(x+i/10.0))  # update the data\n    return line,\n\n#Init only required for blitting to give a clean slate.\ndef init():\n    line.set_ydata(np.ma.array(x, mask=True))\n    return line,\n\nani = animation.FuncAnimation(fig, animate, np.arange(1, 200), init_func=init,\n                              interval=100., blit=True)\nplt.show()\n\n\nUAT 14 - Keyboard shortcuts in IPython after close of figure\nAfter closing the previous figure (with the close button above the figure) the IPython keyboard shortcuts should still function.\n\n\nUAT 15 - Figure face colours\nThe nbagg honours all colours apart from that of the figure.patch. The two plots below should produce a figure with a red background. There should be no yellow figure.\n\nimport matplotlib\nmatplotlib.rcParams.update({'figure.facecolor': 'red',\n                            'savefig.facecolor': 'yellow'})\nplt.figure()\nplt.plot([3, 2, 1])\n\nplt.show()\n\n\n\nUAT 16 - Events\nPressing any keyboard key or mouse button (or scrolling) should cycle the line while the figure has focus. The figure should have focus by default when it is created and re-gain it by clicking on the canvas. Clicking anywhere outside of the figure should release focus, but moving the mouse out of the figure should not release focus.\n\nimport itertools\nfig, ax = plt.subplots()\nx = np.linspace(0,10,10000)\ny = np.sin(x)\nln, = ax.plot(x,y)\nevt = []\ncolors = iter(itertools.cycle(['r', 'g', 'b', 'k', 'c']))\ndef on_event(event):\n    if event.name.startswith('key'):\n        fig.suptitle('%s: %s' % (event.name, event.key))\n    elif event.name == 'scroll_event':\n        fig.suptitle('%s: %s' % (event.name, event.step))\n    else:\n        fig.suptitle('%s: %s' % (event.name, event.button))\n    evt.append(event)\n    ln.set_color(next(colors))\n    fig.canvas.draw()\n    fig.canvas.draw_idle()\n\nfig.canvas.mpl_connect('button_press_event', on_event)\nfig.canvas.mpl_connect('button_release_event', on_event)\nfig.canvas.mpl_connect('scroll_event', on_event)\nfig.canvas.mpl_connect('key_press_event', on_event)\nfig.canvas.mpl_connect('key_release_event', on_event)\n\nplt.show()\n\n\n\nUAT 17 - Timers\nSingle-shot timers follow a completely different code path in the nbagg backend than regular timers (such as those used in the animation example above.) The next set of tests ensures that both “regular” and “single-shot” timers work properly.\nThe following should show a simple clock that updates twice a second:\n\nimport time\n\nfig, ax = plt.subplots()\ntext = ax.text(0.5, 0.5, '', ha='center')\n\ndef update(text):\n    text.set(text=time.ctime())\n    text.axes.figure.canvas.draw()\n    \ntimer = fig.canvas.new_timer(500, [(update, [text], {})])\ntimer.start()\nplt.show()\n\nHowever, the following should only update once and then stop:\n\nfig, ax = plt.subplots()\ntext = ax.text(0.5, 0.5, '', ha='center') \ntimer = fig.canvas.new_timer(500, [(update, [text], {})])\n\ntimer.single_shot = True\ntimer.start()\n\nplt.show()\n\nAnd the next two examples should never show any visible text at all:\n\nfig, ax = plt.subplots()\ntext = ax.text(0.5, 0.5, '', ha='center')\ntimer = fig.canvas.new_timer(500, [(update, [text], {})])\n\ntimer.start()\ntimer.stop()\n\nplt.show()\n\n\nfig, ax = plt.subplots()\ntext = ax.text(0.5, 0.5, '', ha='center')\ntimer = fig.canvas.new_timer(500, [(update, [text], {})])\n\ntimer.single_shot = True\ntimer.start()\ntimer.stop()\n\nplt.show()\n\n\n\nUAT 18 - stopping figure when removed from DOM\nWhen the div that contains from the figure is removed from the DOM the figure should shut down it’s comm, and if the python-side figure has no more active comms, it should destroy the figure. Repeatedly running the cell below should always have the same figure number\n\nfig, ax = plt.subplots()\nax.plot(range(5))\nplt.show()\n\nRunning the cell below will re-show the figure. After this, re-running the cell above should result in a new figure number.\n\nfig.canvas.manager.reshow()\n\n\n\nUAT 19 - Blitting\nClicking on the figure should plot a green horizontal line moving up the axes.\n\nimport itertools\n\ncnt = itertools.count()\nbg = None\n\ndef onclick_handle(event):\n    \"\"\"Should draw elevating green line on each mouse click\"\"\"\n    global bg\n    if bg is None:\n        bg = ax.figure.canvas.copy_from_bbox(ax.bbox) \n    ax.figure.canvas.restore_region(bg)\n\n    cur_y = (next(cnt) % 10) * 0.1\n    ln.set_ydata([cur_y, cur_y])\n    ax.draw_artist(ln)\n    ax.figure.canvas.blit(ax.bbox)\n\nfig, ax = plt.subplots()\nax.plot([0, 1], [0, 1], 'r')\nln, = ax.plot([0, 1], [0, 0], 'g', animated=True)\nplt.show()\nax.figure.canvas.draw()\n\nax.figure.canvas.mpl_connect('button_press_event', onclick_handle)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Math377FinalProject",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+  }
+]
