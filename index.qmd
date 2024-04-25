@@ -6,6 +6,4 @@ This is a Quarto website.
 
 To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
 
-```{r}
-1 + 1
-```
+This website performs exploratory data analysis on the Palmer Penguins data set, looking at relationships between key features and statistics of penguins. This website was made possible by the Dev Ops for Data Science Textbook, the Math378 instructors at USAFA, and of course, ChatGPT.

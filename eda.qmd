@@ -5,33 +5,176 @@ format:
     code-fold: true
 ---
 
-## Penguin Size and Mass by Sex and Species
+## Exploratory Data Analysis
 
 ```{r}
+# loading libraries
 library(palmerpenguins)
 library(dplyr)
 library(ggplot2)
+library(mosaic)
+library(tidyverse)
+library(tidymodels)
 
+# load in the data
 df <- palmerpenguins::penguins
+
+# Setting a theme for all the visualizations
+theme_set(theme_classic())
 ```
 
 ```{r}
-df %>%
-  group_by(species, sex) %>%
+df %>%  # Start with the data frame 'df'
+  group_by(species, sex) %>%  # Group data by 'species' and 'sex' columns
   summarise(
     across(
-      where(is.numeric), 
-      \(x) mean(x, na.rm = TRUE)
-      )
-    ) %>%
-  knitr::kable()
+      where(is.numeric),  # Apply the following function to all numeric columns
+      \(x) mean(x, na.rm = TRUE)  # Calculate the mean of each column, ignoring NA values
+    )
+  ) %>%
+  knitr::kable()  # Convert the resulting data frame into a Markdown table using knitr::kable()
+
 ```
 
-## Penguin Size vs Mass by Species
+## Penguin Mass vs Bill Length by Species
 
 ```{r}
 df %>%
   ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+It appears that bill length might be a determinant of body mass within a species of penguin.
+
+## Penguin Mass vs Bill Length by Island
+
+```{r}
+df %>%
+  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = island)) +
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+It appears that each island might have distinct features.
+
+To do more analysis, let's split the data by island
+
+```{r}
+ biscoe_penguins <- penguins[penguins$island == "Biscoe", ]
+dream_penguins <- penguins[penguins$island == "Dream", ]
+torgersen_penguins <- penguins[penguins$island == "Torgersen", ]
+```
+
+Now, within each island, let's look at mass vs bill length by species.
+
+## Penguin Mass vs Bill Length by Species on Biscoe Island
+
+```{r}
+biscoe_penguins %>%
+  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+It is interesting to note 2 things: there are only Adelie and Gentoo species penguins on Biscoe island, and it appears that bill length is a strong determinant of body mass (dependent on species.
+
+## Penguin Mass vs Bill Length by Species on Dream Island
+
+```{r}
+dream_penguins %>%
+  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+While a bit spread out, there appears to be two distinct groups based on species for the penguins on dream island.
+
+## Penguin Mass vs Bill Length by Species on Torgersen Island
+
+```{r}
+torgersen_penguins %>%
+  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+Only Adelie penguins live on Torgersen island.
+
+## Penguin Mass vs Bill Length by Sex
+
+```{r}
+df %>%
+  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = sex)) +
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+I was expecting bill length to be a determinant of body mass depending on sex more than it appears it might be. My hypothesis was that bill length and body mass would differ depending on sex. To test this, I will perform some additional tests:
+
+```{r}
+# Remove rows with NA values for the variables we are interested in
+penguins_clean <- na.omit(df[, c("sex", "body_mass_g", "bill_length_mm")])
+# Create a new variable for body mass to bill length ratio
+penguins_clean <- mutate(penguins_clean, ratio = body_mass_g / bill_length_mm)
+
+# Fit linear model
+model_full <- lm(ratio ~ sex, data = penguins_clean)
+
+# Fit a reduced model (without the sex variable)
+model_reduced <- lm(ratio ~ 1, data = penguins_clean)
+
+# Perform an F-test
+test_result <- anova(model_reduced, model_full)
+
+# Print the results of the F-test
+print(test_result)
+```
+
+The null hypothesis is that the body mass to bill length ratio is not dependent on sex. The alternative hypothesis is that the body mass to bill length ratio is dependent on sex. At the .05 significance level, with a probability of nearly 0, we would reject the null hypothesis. There is evidence to indicate that sex influences the body mass to bill length ratio for penguins, regardless of their species, contrary to what the graph may indicate.
+
+## Penguin Mass vs Bill Depth by Species
+
+```{r}
+df %>%
+  ggplot(aes(x = bill_depth_mm, y = body_mass_g, color = species)) +
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+It appears that bill depth might be a determinant of body mass depending on species. It is interesting to note that the Gentoo species appears to have a very distinct body mass to bill depth ratio than the Adelie and Chinstrap species. They appear to maybe have the same body mass to bill depth ratio.
+
+Let's split up the data by species:
+
+```{r}
+adelie_penguins <- penguins[penguins$species == "Adelie", ]
+chinstrap_penguins <- penguins[penguins$species == "Chinstrap", ]
+gentoo_penguins <- penguins[penguins$species == "Gentoo", ]
+```
+
+## Adelie Penguin Mass vs Bill Length by Sex 
+
+```{r}
+adelie_penguins %>%
+  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = sex)) +
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+## Chinstrap Penguin Mass vs Bill Length by Sex 
+
+```{r}
+chinstrap_penguins %>%
+  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = sex)) +
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+## Gentoo Penguin Mass vs Bill Length by Sex 
+
+```{r}
+gentoo_penguins %>%
+  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = sex)) +
   geom_point() + 
   geom_smooth(method = "lm")
 ```
